@@ -3,31 +3,41 @@ import logo from './logo.svg';
 import './App.css';
 
 class App extends Component {
-  constructor(){
-super();
+  constructor() {
+    super();
 
-this.state = {
-  monsters:[ {
-    name:'Linda',
-    id:'12o31n2312'
-  },
- {
-    name:'Frank',
-    id :'i1j23lasd'
-  },{
-    name:'Jack',
-    id:'1odksahd'
-  },{
-    name:'Ali',
-    id:'iasdj1'
-  }]
-}
-  };
-  render (){
+    this.state = {
+      monsters: []
+    };
+    console.log('constructor');
+  }
+  componentDidMount() {
+    console.log('componentDidMount');
+    fetch('https://jsonplaceholder.typicode.com/users')
+      .then(response => response.json())
+      .then((users) => this.setState(() => {
+        return { monsters: users }
+      },
+        () => {
+        }
+      ))
+  }
+  render() {
+    console.log('render');
     return (
       <div className="App">
+        <input className='search-box' type='search' placeholder='search monsters' onChange={(event) => {
+          const searchstr =event.target.value.toLocaleLowerCase();
+
+          const filteredMonsters = this.state.monsters.filter((monster) => {
+            return monster.name.toLocaleLowerCase().includes(searchstr);
+          });
+          this.setState(() => {
+            return { monsters: filteredMonsters };
+          })
+        }} />
         {
-          this.state.monsters.map((monster)=>{
+          this.state.monsters.map((monster) => {
             return <div key={monster.id}><h1>{monster.name}</h1></div>
           })
         }
